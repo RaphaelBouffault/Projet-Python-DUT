@@ -1,0 +1,66 @@
+import csv
+import sqlite3
+connexion = sqlite3.connect(":memory:")
+c = connexion.cursor()
+c.execute("CREATE TABLE Resume (couleurEquipes VARCHAR (30), effectifsEquipes INTEGER, materielCourse VARCHAR (30),materielSportsCollectifs VARCHAR (30), MaterielCeremonie VARCHAR (30), NombreArbitre INTEGER, NombreParentsEleves INTEGER);")
+
+csvFile = open("projet.csv", "r") #ouverture du fichier employes.csv en lecture
+data = csv.reader(csvFile)
+htmlFile = open("htmlproj.html", "w") #ouverture du fichier manager.html en ecriture
+htmlFile.write("<!DOCTYPE HTML>\n")
+htmlFile.write("<html lang=fr>\n")
+htmlFile.write("<head>\n")
+htmlFile.write("<title>rencontre sportive</title>\n")
+htmlFile.write("<meta charset='UTF-8'>")
+htmlFile.write("<link rel='stylesheet' href='html-css.css' />\n")
+htmlFile.write("</head>\n")
+htmlFile.write("<body>\n")
+htmlFile.write("<H1> Bonjour &agrave; tous et bienvenue &agrave; cette rencontre sportive !  </H1> \n")
+htmlFile.write("<img src='enfants.jpg' alt='image'>")
+htmlFile.write("<H2> Ci-dessous le r&eacute;capitulatif (&agrave; noter pour chaque directeur d'&eacute;cole)</H2> \n")
+htmlFile.write("<table>")
+htmlFile.write("<tr>\n")
+htmlFile.write("<th> Couleur des &eacute;quipes </th>\n")
+htmlFile.write("<th> Effectifs des &eacute;quipes </th>\n")
+htmlFile.write("<th> Mat&eacute;riel pour la course </th>\n")
+htmlFile.write("<th> Mat&eacute;riel pour les sports collectifs </th>\n")
+htmlFile.write("<th> Mat&eacute;riel pour la c&eacute;r&eacute;monie </th>\n")
+htmlFile.write("<th> Nombre d'arbitres </th>\n")
+htmlFile.write("<th> Nombre de parents d'&eacute;l&egrave;ves </th>\n")
+htmlFile.write("</tr>\n")
+
+for row in data:
+    htmlFile.write("<tr>\n") #une ligne du tableau
+    htmlFile.write("<td>" + row[0] + "</td>\n") #une colonne de la ligne
+    htmlFile.write("<td>" + row[1] + "</td>\n") #une colonne de la ligne
+    htmlFile.write("<td>" + row[2] + "</td>\n") #une colonne de la ligne
+    htmlFile.write("<td>" + row[3] + "</td>\n") #une colonne de la ligne
+    htmlFile.write("<td>" + row[4] + "</td>\n") #une colonne de la ligne
+    htmlFile.write("<td>" + row[5] + "</td>\n") #une colonne de la ligne
+    htmlFile.write("<td>" + row[6] + "</td>\n") #une colonne de la ligne
+    htmlFile.write("</tr>\n")
+    c.execute("INSERT INTO Resume VALUES('"+row[0]+"','"+row[1]+"','"+row[2]+"','"+row[3]+"','"+row[4]+"','"+row[5]+"','"+row[6]+"');")
+    
+htmlFile.write("</table>\n")
+
+for r in c.execute("SELECT SUM(effectifsEquipes) FROM Resume;"):
+    htmlFile.write("<H3> Nous attendons "+str(r[0])+" enfants pour cette journ&eacute;e </H3> \n")
+for r in c.execute("SELECT COUNT(couleurEquipes) FROM Resume where couleurEquipes !='';"):
+    htmlFile.write("<H3> Ils seront r&eacute;partis en "+str(r[0])+" &eacute;quipes qu'ils garderont tout au long de la rencontre </H3> \n")
+for r in c.execute("SELECT SUM(NombreArbitre) FROM Resume;"):
+    htmlFile.write("<H3> Il y aura "+str(r[0])+" arbitres, chaque arbitre s'occupera d'une &eacute;preuve</H3> \n")
+for r in c.execute("SELECT SUM(NombreParentsEleves) FROM Resume;"):
+    htmlFile.write("<H3> Les parents d'&eacute;l&egrave;ves seront "+str(r[0])+" (1 parent pour 8 enfants maximum) </H3> \n")
+for r in c.execute("SELECT COUNT(MaterielCeremonie) FROM Resume where MaterielCeremonie !='';"):
+    htmlFile.write("<H3> PS : Ne pas oublier le plus important pour les participants... "+str(r[0])+" objets pour la c&eacute;r&eacute;monie de fin ! (banquet et remise de r&eacute;compenses) &#9786; </H3> \n")
+
+
+connexion.close()
+
+
+#fin du for
+htmlFile.write("</body>\n")
+htmlFile.write("</html>\n")
+csvFile.close() #fermeture du fichier employes.csv
+htmlFile.close() #fermeture du fichier manager.html
+

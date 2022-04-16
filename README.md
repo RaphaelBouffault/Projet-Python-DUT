@@ -2,7 +2,7 @@
 
 Le programme est écrit en python, et manipule des bases de données (langage SQL).
 
--Chaque participant à l'evenement envoie ses données par l'intermédiaire d'un fichier **.csv**.
+-Chaque participant à l'événement envoie ses données par l'intermédiaire d'un fichier **.csv**.
 
 -Tout est sauvegardé dans une base de données, afin de pouvoir compter plus facilement le nombre de participants, la nourriture amenée, les boissons amenées, etc..
 
